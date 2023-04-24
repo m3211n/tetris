@@ -25,35 +25,53 @@ function redrawField () {
 
 class tetrisPiece {
 
-    shape: number // type
-    rotation: number // rotation
-    x: number // x-coord
-    y: number // y-coord
+    shapeType: number // shape
+    shapeRotation: number // rotation
+    positionX: number // x-coord
+    positionY: number // y-coord
+    shapeMatrix: number[]
 
     constructor(s: number) {
-        this.shape = s
-        this.rotation = 0
-        this.x = 5
-        this.y = 0
+
+        let pieceShape: number[][][] = [
+            [[1, 5, 9, 13], [4, 5, 6, 7]],
+            [[1, 5, 6, 10], [5, 6, 8, 9]],
+            [[1, 4, 5, 8], [4, 5, 9, 10]],
+            [[1, 4, 5, 6], [1, 5, 6, 9], [4, 5, 6, 9], [1, 4, 5, 9]],
+            [[5, 6, 9, 10]],
+            [[1, 5, 9, 10], [5, 6, 7, 9], [5, 6, 10, 14], [5, 9, 10, 11]],
+            [[1, 5, 8, 9], [1, 5, 6, 7], [1, 2, 5, 9], [4, 5, 6, 10]]
+        ]
+
+        this.shapeType = s
+        this.shapeRotation = 0
+        this.positionX = 4
+        this.positionY = 0
+
+        this.shapeMatrix = pieceShape[this.shapeType][this.shapeRotation] 
+    }
+
+    placeInGame () {
+        
     }
 
     rotate () {
-        this.rotation++
-        if (((this.shape == 0 || this.shape == 1 || this.shape == 2) && (this.rotation > 2)) || ((this.shape == 3 || this.shape == 5 || this.shape == 6) && (this.rotation > 3)) || (this.shape == 4 )) {
-            this.rotation = 0
+        this.shapeRotation++
+        if (((this.shapeType == 0 || this.shapeType == 1 || this.shapeType == 2) && (this.shapeRotation > 2)) || ((this.shapeType == 3 || this.shapeType == 5 || this.shapeType == 6) && (this.shapeRotation > 3)) || (this.shapeType == 4 )) {
+            this.shapeRotation = 0
         }
     }
 
     moveDown () {
-        this.y++
+        this.positionY++
     }
 
     moveLeft () {
-        this.x--
+        this.positionX--
     }
 
     moveRight () {
-        this.x++
+        this.positionX++
     }
 } 
 
@@ -93,16 +111,6 @@ let matrix: number[][] = []
 let spritesGrid: Sprite[][] = []
 let score: number = 0
 let lines: number = 0
-
-let pieceShape: number[][][] = [
-    [[1, 5, 9, 13], [4, 5, 6, 7]],
-    [[1, 5, 6, 10], [5, 6, 8, 9]],
-    [[1, 4, 5, 8], [4, 5, 9, 10]],
-    [[1, 4, 5 ,6], [1, 5, 6, 9], [4, 5, 6, 9], [1, 4, 5, 9]],
-    [[5, 6, 9, 10]],
-    [[1, 5, 9, 10], [5, 6, 7, 9], [5, 6, 10, 14], [5, 9, 10, 11]],
-    [[1, 5, 8, 9], [1, 5, 6, 7], [1, 2, 5, 9], [4, 5, 6, 10]]
-]
 
 let textSprite = textsprite.create("TETRIS")
 textSprite.setMaxFontHeight(10)
