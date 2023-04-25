@@ -6,7 +6,7 @@ class tetrisField {
     score: number
     lines: number
 
-    private spritesGrid: Sprite[][]
+    spritesGrid: Sprite[][]
 
     private matrix: number[][]
     private titleSprite: TextSprite
@@ -83,9 +83,9 @@ class tetrisField {
                     row.push(0)
                 }
                 this.matrix.unshift(row)
+                this.redraw()
             }
         }
-        this.redraw()
     }
 
 }
