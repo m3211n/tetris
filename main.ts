@@ -1,26 +1,93 @@
-function initField () {
-    for (let i = 0; i < 20; i ++) {
-        let row: number[] = []
-        for (let j = 0; j < 10; j++) {
-            row.push(0)
-        }
-        matrix.push(row)
+class tetrisField {
+
+    width: number
+    height: number
+
+    score: number
+    lines: number
+
+    private spritesGrid: Sprite[][]
+
+    private matrix: number[][]
+    private titleSprite: TextSprite
+    private scoreSprite: TextSprite
+    private linesSprite: TextSprite
+
+    placePiece (p: tetrisPiece) {
+
     }
 
-}
-
-function redrawField () {
-    for (let i = 0; i < 20; i++) {
-        let row: Sprite[] = []
-        for (let j = 0; j < 10; j++) {
-            let index = matrix[i][j]
-            row.push(sprites.create(color[index], SpriteKind.Player))
-            row[j].setPosition(j * 5 + 13, i * 5 + 13)
+    create (w: number, h: number) {
+        this.matrix = []
+        for (let i = 0; i < 20; i++) {
+            let row: number[] = []
+            for (let j = 0; j < 10; j++) {
+                row.push(0)
+            }
+            this.matrix.push(row)
         }
-        spritesGrid.push(row)
+        this.width = w
+        this.height = h
+
+        this.score = 0
+        this.lines = 0
+
+        this.titleSprite = textsprite.create("TETRIS")
+        this.titleSprite.setMaxFontHeight(10)
+        this.titleSprite.setPosition(110, 13)
+
+        this.scoreSprite = textsprite.create("Score: " + this.score)
+        this.linesSprite = textsprite.create("Lines: " + this.lines)
+
+        this.redraw()
     }
-    scoreSprite.setText("Score: " + score)
-    linesSprite.setText("Lines: " + lines)
+
+    redraw () {
+
+        let color = [
+            assets.image`cell0`,
+            assets.image`cell1`,
+            assets.image`cell2`,
+            assets.image`cell3`,
+            assets.image`cell4`,
+            assets.image`cell5`,
+            assets.image`cell6`,
+            assets.image`cell7`
+        ]
+
+        for (let i = 0; i < 20; i++) {
+            let row: Sprite[] = []
+            for (let j = 0; j < 10; j++) {
+                let index = this.matrix[i][j]
+                row.push(sprites.create(color[index], SpriteKind.Player))
+                row[j].setPosition(j * 5 + 13, i * 5 + 13)
+            }
+            this.spritesGrid.push(row)
+        }
+        this.scoreSprite.setText("Score: " + this.score)
+        this.scoreSprite.setMaxFontHeight(8)
+        this.scoreSprite.setPosition(110, 28)
+
+        this.linesSprite.setText("Lines: " + this.lines)
+        this.linesSprite.setMaxFontHeight(8)
+        this.linesSprite.setPosition(110, 40)
+    }
+
+    scanLines () {
+        for (let i = 0; i < 20; i++) {
+            if (this.matrix[19 - i].indexOf(0) == -1) {
+                this.matrix.removeAt(19 - i)
+                let row: number[] = []
+                this.lines++
+                for (let j = 0; j < 10; j++) {
+                    row.push(0)
+                }
+                this.matrix.unshift(row)
+            }
+        }
+        this.redraw()
+    }
+
 }
 
 class tetrisPiece {
@@ -80,50 +147,11 @@ game.onUpdate(function() {
 })
 
 game.onUpdateInterval(100, function() {
-    for (let i = 0; i < 20; i++) {
-        if (matrix[19-i].indexOf(0) == -1) {
-            matrix.removeAt(19-i)
-            let row: number[] = []
-            lines++
-            for (let j = 0; j < 10; j++) {
-                row.push(0)
-            }
-            matrix.unshift(row)
-        }
-    }
-    redrawField()
+    field.scanLines()
 })
 
 scene.setBackgroundImage(assets.image`game`)
 
-let color = [
-assets.image`cell0`,
-assets.image`cell1`,
-assets.image`cell2`,
-assets.image`cell3`,
-assets.image`cell4`,
-assets.image`cell5`,
-assets.image`cell6`,
-assets.image`cell7`
-]
+const field = new tetrisField()
 
-let matrix: number[][] = []
-let spritesGrid: Sprite[][] = []
-let score: number = 0
-let lines: number = 0
-
-let textSprite = textsprite.create("TETRIS")
-textSprite.setMaxFontHeight(10)
-textSprite.setPosition(110, 13)
-
-let scoreSprite = textsprite.create("Score: " + score)
-scoreSprite.setMaxFontHeight(8)
-scoreSprite.setPosition(110, 28)
-
-let linesSprite = textsprite.create("Lines: " + lines)
-linesSprite.setMaxFontHeight(8)
-linesSprite.setPosition(110, 40)
-
-initField()
-redrawField()
-
+field.create(10, 20)
